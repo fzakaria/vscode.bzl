@@ -40,6 +40,7 @@ def _get_source_root(path):
     fail("Could not determine source root for path: " + path)
 
 def _classpath_aspect_impl(target, ctx):
+    """Aspect implementation that collects classpath and source path information."""
 
     direct_jars = []
     if JavaInfo in target:
@@ -47,6 +48,15 @@ def _classpath_aspect_impl(target, ctx):
         if java_info.java_outputs:
             class_jar = java_info.java_outputs[0].class_jar
             source_jar = java_info.java_outputs[0].source_jar
+            direct_jars.append(struct(
+                class_jar = class_jar.path if class_jar else None,
+                source_jar = source_jar.path if source_jar else None,
+            ))
+        else:
+            # java_proto_library doesn't seem to have a java_outputs field,
+            # so we fall back to full_compile_jars and source_jars.
+            class_jar = java_info.full_compile_jars.to_list()[0]
+            source_jar = java_info.source_jars[0]
             direct_jars.append(struct(
                 class_jar = class_jar.path if class_jar else None,
                 source_jar = source_jar.path if source_jar else None,

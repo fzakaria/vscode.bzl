@@ -1,0 +1,19 @@
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
+
+java_binary(
+    name = "HelloWorld",
+    srcs = ["HelloWorld.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":Library",
+    ],
+)
+
+java_library(
+    name = "Library",
+    srcs = ["Library.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@maven//:com_google_code_gson_gson",
+    ],
+)

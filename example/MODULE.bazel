@@ -1,0 +1,23 @@
+module(
+    name = "vscode_examples",
+    version = "0.0.0",
+)
+
+bazel_dep(name = "vscode.bzl")
+local_path_override(
+    module_name = "vscode.bzl",
+    path = "..",
+)
+
+bazel_dep(name = "rules_java", version = "8.3.2")
+bazel_dep(name = "rules_jvm_external", version = "6.7")
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        "com.google.code.gson:gson:2.13.1",
+    ],
+    fetch_sources = True,
+)
+
+use_repo(maven, "maven")

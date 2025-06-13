@@ -1,0 +1,8 @@
+load("@vscode.bzl", "vscode_settings")
+
+vscode_settings(
+    name = "vscode_settings",
+    targets = [
+        "//java/com/example:HelloWorld",
+    ],
+)

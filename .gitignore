@@ -1,0 +1,4 @@
+bazel-*
+example/bazel-*
+example/.vscode
+.vscode

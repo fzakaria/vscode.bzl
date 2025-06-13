@@ -49,3 +49,6 @@ ln -s ../bazel-bin/vscode_settings.json .vscode/settings.json
 Reload VSCode and voila!
 
 > ❗ Make sure you have the [Java Extension Pack](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) installed.
+
+
+You will notice the `settings.json` file will be produced with source roots, compilation JARs **and** source-jars if you have them enabled through _rules_jvm_external_.

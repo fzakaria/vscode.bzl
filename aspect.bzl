@@ -35,21 +35,22 @@ def _get_source_root(path):
         search_pattern = known_root + "/"
         # Return the path up to and including the root part
         if search_pattern in path:
-            return path.split(search_pattern, 1)[0] + known_root
+            return path[:path.index(known_root) + len(known_root)]
     
     fail("Could not determine source root for path: " + path)
 
 def _classpath_aspect_impl(target, ctx):
-    java_info = target[JavaInfo]
 
     direct_jars = []
-    if java_info.java_outputs:
-        class_jar = java_info.java_outputs[0].class_jar
-        source_jar = java_info.java_outputs[0].source_jar
-        direct_jars.append(struct(
-            class_jar = class_jar.path if class_jar else None,
-            source_jar = source_jar.path if source_jar else None,
-        ))
+    if JavaInfo in target:
+        java_info = target[JavaInfo]
+        if java_info.java_outputs:
+            class_jar = java_info.java_outputs[0].class_jar
+            source_jar = java_info.java_outputs[0].source_jar
+            direct_jars.append(struct(
+                class_jar = class_jar.path if class_jar else None,
+                source_jar = source_jar.path if source_jar else None,
+            ))
 
     transitive = [
         dep[ClassPathInfo].jars
@@ -64,14 +65,22 @@ def _classpath_aspect_impl(target, ctx):
 
     direct_source_roots = []
     for src in getattr(ctx.rule.attr, "srcs", []):
-        source_root = _get_source_root(src.files.to_list()[0].path)
-        direct_source_roots.append(source_root)
+        file = src.files.to_list()[0]
+        if file.path.endswith(".java"):
+            source_root = _get_source_root(file.path)
+            direct_source_roots.append(source_root)
+            break
 
     transitive_source_roots = [
         dep[ClassPathInfo].source_roots
         for dep in getattr(ctx.rule.attr, "deps", [])
         if ClassPathInfo in dep
     ]
+
+    maven_target = getattr(ctx.rule.attr, "target", None)
+    if maven_target:
+        if ClassPathInfo in maven_target:
+            transitive_source_roots.append(maven_target[ClassPathInfo].source_roots)
 
     all_source_roots = depset(
         direct = direct_source_roots,
@@ -89,6 +98,9 @@ classpath_aspect = aspect(
     implementation = _classpath_aspect_impl,
     # attr_aspects is a list of rule attributes along
     # which the aspect propagates.
-    attr_aspects = ["deps"],
-    required_providers = [JavaInfo],
+    # We add 'target' to handle maven_project from rules_jvm_external
+    attr_aspects = ["deps", "target"],
+    # I want to add a required provider however it seems to skip over some targets
+    # even though they have the provider such as `-project` targets from rules_jvm_external.
+    #required_providers = [JavaInfo],
 )

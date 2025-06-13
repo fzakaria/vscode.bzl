@@ -79,3 +79,14 @@ Here is an example from the [example](./example/) directory that is produced.
     ]
 }
 ```
+
+## Common Gotchas
+
+1. Make sure you `bazel build`
+
+VSCode needs to be able to actually find the dependencies in the `bazel-out` directory which means you must have `bazel build` the targets you care about.
+I recommend a `bazel build //...` to catch it all.
+
+> Bazel keeps prior builds in the same `bazel-out` so subsequent builds for different targets doesn't affect it unless you do `bazel clean`.
+
+2. If you are using _build without the bytes_, make sure you have `--remote_download_outputs=all` set so that all the needed dependencies are present.

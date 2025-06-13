@@ -7,6 +7,7 @@ def _vscode_settings_impl(ctx):
     for target in ctx.attr.targets:
         if ClassPathInfo in target:
             all_jars.extend(target[ClassPathInfo].jars.to_list())
+            all_jars.extend(target[ClassPathInfo].jars.to_list())
             all_source_roots.extend(target[ClassPathInfo].source_roots.to_list())
 
     # Use a dict to automatically handle duplicates from the depset

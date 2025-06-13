@@ -68,6 +68,10 @@ def _classpath_aspect_impl(target, ctx):
         if ClassPathInfo in dep
     ]
 
+    for test in getattr(ctx.rule.attr, "tests", []):
+        if ClassPathInfo in test:
+            transitive.append(test[ClassPathInfo].jars)
+
     all_jars = depset(
         direct = direct_jars,
         transitive = transitive,
@@ -92,6 +96,10 @@ def _classpath_aspect_impl(target, ctx):
         if ClassPathInfo in maven_target:
             transitive_source_roots.append(maven_target[ClassPathInfo].source_roots)
 
+    for test in getattr(ctx.rule.attr, "tests", []):
+        if ClassPathInfo in test:
+            transitive_source_roots.append(test[ClassPathInfo].source_roots)
+
     all_source_roots = depset(
         direct = direct_source_roots,
         transitive = transitive_source_roots,
@@ -109,7 +117,8 @@ classpath_aspect = aspect(
     # attr_aspects is a list of rule attributes along
     # which the aspect propagates.
     # We add 'target' to handle maven_project from rules_jvm_external
-    attr_aspects = ["deps", "target"],
+    # We add 'tests' to handle test_suite and test targets
+    attr_aspects = ["deps", "target", "tests"],
     # I want to add a required provider however it seems to skip over some targets
     # even though they have the provider such as `-project` targets from rules_jvm_external.
     #required_providers = [JavaInfo],

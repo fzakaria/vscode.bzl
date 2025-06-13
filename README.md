@@ -52,3 +52,30 @@ Reload VSCode and voila!
 
 
 You will notice the `settings.json` file will be produced with source roots, compilation JARs **and** source-jars if you have them enabled through _rules_jvm_external_.
+
+Here is an example from the [example](./example/) directory that is produced.
+
+```json
+{
+    "java.import.gradle.enabled": false,
+    "java.import.maven.enabled": false,
+    "java.import.projectSelection": "manual",
+    "java.project.referencedLibraries": {
+        "include": [
+            "bazel-out/darwin_arm64-fastbuild/bin/external/rules_jvm_external++maven+maven/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.13.1/processed_gson-2.13.1.jar",
+            "bazel-out/darwin_arm64-fastbuild/bin/external/rules_jvm_external++maven+maven/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.38.0/processed_error_prone_annotations-2.38.0.jar",
+            "bazel-out/darwin_arm64-fastbuild/bin/java/com/example/HelloWorld.jar",
+            "bazel-out/darwin_arm64-fastbuild/bin/java/com/example/libLibrary.jar"
+        ],
+        "sources": {
+            "bazel-out/darwin_arm64-fastbuild/bin/external/rules_jvm_external++maven+maven/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.13.1/processed_gson-2.13.1.jar": "external/rules_jvm_external++maven+maven/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.13.1/gson-2.13.1-sources.jar",
+            "bazel-out/darwin_arm64-fastbuild/bin/external/rules_jvm_external++maven+maven/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.38.0/processed_error_prone_annotations-2.38.0.jar": "external/rules_jvm_external++maven+maven/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.38.0/error_prone_annotations-2.38.0-sources.jar",
+            "bazel-out/darwin_arm64-fastbuild/bin/java/com/example/HelloWorld.jar": "bazel-out/darwin_arm64-fastbuild/bin/java/com/example/HelloWorld-src.jar",
+            "bazel-out/darwin_arm64-fastbuild/bin/java/com/example/libLibrary.jar": "bazel-out/darwin_arm64-fastbuild/bin/java/com/example/libLibrary-src.jar"
+        }
+    },
+    "java.project.sourcePaths": [
+        "java"
+    ]
+}
+```
